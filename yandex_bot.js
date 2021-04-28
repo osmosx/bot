@@ -10,16 +10,28 @@
 // @grant        none
 // ==/UserScript==
 
-let keywords = ['arduino', 'javascript', 'html','вектор'];
-
+let sites = {
+	"habr.com":["arduino", "javascript", "html","вектор"],
+	"xn----7sbab5aqcbiddtdj1e1g.xn--p1ai":['Гобой','Как звучит флейта', 'Кларнет','Саксофон','Тромбон','Валторна'],
+};
+let site = Object.keys(sites)[getRandom(0,Object.keys(sites).length)];
+let yandexInput = document.getElementsByName('text')[0];
+let keywords = sites[site];
+let keyword = keywords[getRandom(0, keywords.length)];
 let button = document.getElementsByClassName('button mini-suggest__button')[0];
 let links = document.links;
-let keyword = keywords[getRandom(0, keywords.length)];
-let yandexInput = document.getElementsByName('text')[0];
 let i = 0;
 
+if(button !== undefined) {
+	document.cookie = "site="+site;
+}else if (location.hostname == "yandex.ru") {
+	site = getCookie("site");
+}else{
+	site = location.hostname;
+}
 
 if(button !== undefined) {
+	document.cookie = "site="+site;
 	let timerId = setInterval(()=> {
 		yandexInput.value += keyword[i];
 		i++;
@@ -29,28 +41,26 @@ if(button !== undefined) {
 		}
 	}, 1000);
 
-}else if(location.hostname == "habr.com") {
-	console.log("Мы на сайте");
+}else if(location.hostname == site) {
 	setTimeout(()=>{
 		let index = getRandom(0,links.length);
 
 		if(getRandom(0,101)>=70) {
 			location.href = "https://yandex.ru/";
 		}
-		if(links[index].href.indexOf('habr.com')!=-1)
+		if(links[index].href.indexOf(site)!=-1)
 			links[index].click();
-	},getRandom(2000,3500));
+	},getRandom(4000,7000));
 }
 else{
 	let nextYandexPage = true;
 	for(let i=0; i<links.length; i++) {
-		if(links[i].href.indexOf('habr.com')!=-1) {
+		if(links[i].href.indexOf(site)!=-1) {
 			let link = links[i];
 			nextYandexPage = false;
-			console.log("Нашел фразу" + link);
 			setTimeout(()=>{
 				link.removeAttribute("target");
-				link.click();},getRandom(1000,4500));
+				link.click();},getRandom(3000,5000));
 			break;
 		}
 	}
@@ -68,4 +78,11 @@ else{
 
 function getRandom(min, max) {
 	return Math.floor(Math.random()*(max-min)+min);
+}
+
+function getCookie(name) {
+	let matches = document.cookie.match(new RegExp(
+		"(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+	));
+	return matches ? decodeURIComponent(matches[1]) : undefined;
 }
