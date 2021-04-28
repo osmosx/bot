@@ -4,6 +4,7 @@
 // @version      0.1
 // @description  try to take over the world!
 // @author       Denis
+// @match        https://xn----7sbab5aqcbiddtdj1e1g.xn--p1ai/*
 // @match        https://yandex.ru/*
 // @match        https://habr.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
